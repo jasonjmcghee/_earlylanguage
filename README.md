@@ -26,7 +26,7 @@ Examples:
 	"7" is not a sequence of letters!
 
 
--->	(Example in one command)
+Above examples in one command
 
 	madison> let;three;3;;let;three;3;;do;print(five*three);4;;let;three;5;;three;;let;7;1
 	five means 5
