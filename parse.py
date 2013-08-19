@@ -3,6 +3,7 @@ from __future__ import print_function
 import fileinput, sys, re
 
 variables = {}
+arg1 = None
 
 class Constant(object):
   def __init__(self, name, obj=None):
@@ -18,41 +19,55 @@ class Constant(object):
 
 def parse(line):
 
-  if line == "" or line == "\n" or line is None: return None
-  if line is not None:
-    chunks = line.split(";")
-    if variables is not None:
-      #for var in variables.keys():
-      for i in range(len(chunks)):
-        regex = re.compile("[a-z]+")
-        strings = regex.findall(chunks[i])
-#        print("STRINGS: ", strings)
-        for string in strings:
-#          print("STRING", string)
-          if string in variables.keys():
-            pattern = string+"([^a-z])"
-            temp = re.findall(pattern, chunks[i])
-            if temp is None or temp == []:
-              temp = re.findall(string, chunks[i])
-#            print(temp, chunks[i], variables[string])
-            chunks[i] = re.sub(pattern, variables[string]+temp[0], chunks[i])
-            #temp = chunks[i].replace(var, variables[var])
-            #chunks[i] = 
-    if (len(chunks) == 1):
-      expr = chunks[0]
-      return eval(expr)
-    elif (len(chunks) > 1):
-      evaluate(chunks[0], chunks[1], chunks[2])
+  lines = line.split(";;")
+  for line in lines:
+	  if line == "" or line == "\n" or line is None: return None
+	  if line is not None:
+	    chunks = line.split(";")
+	    if len(chunks) > 1: 
+	    	global arg1
+	    	arg1 = chunks[1]
+	    if variables is not None:
+	      #for var in variables.keys():
+	      for i in range(len(chunks)):
+	        regex = re.compile("[a-z]+")
+	        strings = regex.findall(chunks[i])
+	        if strings != []:
+	          #print(strings)
+	#         print("STRINGS: ", strings)
+	          for string in strings:
+	#           print("STRING", string)
+	            if string in variables.keys():
+	              pattern = string+"([^a-z])"
+	              temp = re.findall(pattern, chunks[i])
+	              if temp is None or temp == []:
+	              	temp = re.findall(string+"\n", chunks[i])
+	              	#print(variables)
+	                replacement = variables[string]
+	                chunks[i] = re.sub(string, replacement, chunks[i])
+	              else:
+	              	replacement = variables[string]+temp[0]
+	              	chunks[i] = re.sub(pattern, replacement, chunks[i])
+	              	#temp = chunks[i].replace(var, variables[var])
+	             	 #chunks[i] = 
+	    if (len(chunks) == 1):
+	      expr = chunks[0]
+	      return eval(expr)
+	    elif (len(chunks) > 1):
+	      evaluate(chunks[0], chunks[1], chunks[2])
 
 def evaluate(*args):
   num = str(eval(args[2]))
   if args[0] == "let" and len(args) == 3:
-    if (args[1] in variables.keys()):
-      print("You told me \"", args[1], "\" meant", variables[args[1]],"- did you lie?")
+    if (re.search("[a-z]+", str(arg1)) != None):
+      if (arg1 in variables.keys()):
+        print("You told me \""+arg1+"\" meant", variables[arg1],"- did you lie?")
+      else:
+        constant = Constant(arg1, num)
+        variables[str(constant)] = getattr(constant, "obj")
+        print(constant, "means", variables[str(constant)])
     else:
-      constant = Constant(args[1], num)
-      variables[str(constant)] = getattr(constant, "obj")
-      print(constant, " means ", variables[str(constant)])
+      print("Illegal assignment:", "\""+arg1+"\"", "is not a sequence of letters!")
   elif (args[0] == "do" and len(args) == 3):
     do(args[1], int(num))
   #print(args)
