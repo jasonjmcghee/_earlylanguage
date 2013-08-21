@@ -43,19 +43,22 @@ def parse(line):
         evaluate(chunks[0], chunks[1], chunks[2])
 
 def madEval(expr):
+  result = ""
   temp = expr
   try:
-    temp = eval(expr)
+    result = eval(expr)
   except NameError:
     if variables is not None:
-      regex = re.compile("[a-zA-Z]+")
+      regex = re.compile("[a-zA-Z][a-zA-Z0-9]*")
       strings = regex.findall(expr)
       #print("STRINGS:", strings)
       if strings != []:
         for string in strings:
+          #stringArray = temp.split("[a-zA-Z0-9]+")
+          #print(strings)
           if string in variables.keys():
             #print(string,"is a key")
-            pattern = string+"([^a-zA-Z])"
+            pattern = string+"([^a-zA-Z0-9])"
             t = re.findall(pattern, temp)
             #print("T:",t)
             if t is None or t == [] or t == '\n':
@@ -66,7 +69,7 @@ def madEval(expr):
               try:
                 obj = variables[string]
                 if isinstance(obj, collections.Iterable):
-                  obj = eval(variables[string].next())
+                  obj = eval(variables[string])
               except TypeError:
                 obj = variables[string]
               replacement = str(obj)+t[0]
@@ -79,9 +82,9 @@ def madEval(expr):
 
 def evaluate(*args):
   num = madEval(args[2])
-  if isinstance(num, collections.Iterable):
+  #if isinstance(num, collections.Iterable):
     #print("ARG2:", num)
-    print()
+    #print()
   if args[0] == "let" and len(args) == 3:
     if (re.search("[a-z]+", str(arg1)) != None):
       if (args[1] in variables.keys()):
