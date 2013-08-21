@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import fileinput, sys, re
+import collections
 
 variables = {}
 arg1 = None
@@ -62,7 +63,13 @@ def madEval(expr):
               replacement = str(variables[string])
               temp = re.sub(string, replacement, temp)
             else:
-              replacement = str(variables[string])+t[0]
+              try:
+                obj = variables[string]
+                if isinstance(obj, collections.Iterable):
+                  obj = eval(variables[string].next())
+              except TypeError:
+                obj = variables[string]
+              replacement = str(obj)+t[0]
               temp = re.sub(pattern, replacement, temp)
 
         return eval(temp)
@@ -71,8 +78,9 @@ def madEval(expr):
 #def replaceVariables()
 
 def evaluate(*args):
-  print("ARG2:", args[2])
   num = madEval(args[2])
+  if isinstance(num, collections.Iterable):
+    print("ARG2:", num)
   if args[0] == "let" and len(args) == 3:
     if (re.search("[a-z]+", str(arg1)) != None):
       if (args[1] in variables.keys()):
