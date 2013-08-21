@@ -30,14 +30,14 @@ def parse(line):
         arg1 = chunks[1]
         if arg1[len(arg1)-1] == '\n':
           arg1 = arg1[0:len(arg1)-1]
-          print("ARG1:", arg1)
+          #print("ARG1:", arg1)
         for i in range(1, len(chunks)):
           chunk = chunks[i]
           if chunk[len(chunk)-1] == '\n':
             chunk = chunk[0:len(arg1)-1]
       if (len(chunks) == 1):
         expr = chunks[0]
-        print("EXPR:", expr)
+        #print("EXPR:", expr)
         return madEval(expr)
       elif (len(chunks) > 1):
         evaluate(chunks[0], chunks[1], chunks[2])
@@ -50,14 +50,14 @@ def madEval(expr):
     if variables is not None:
       regex = re.compile("[a-zA-Z]+")
       strings = regex.findall(expr)
-      print("STRINGS:", strings)
+      #print("STRINGS:", strings)
       if strings != []:
         for string in strings:
           if string in variables.keys():
-            print(string,"is a key")
+            #print(string,"is a key")
             pattern = string+"([^a-zA-Z])"
             t = re.findall(pattern, temp)
-            print("T:",t)
+            #print("T:",t)
             if t is None or t == [] or t == '\n':
               t = re.findall(string+"\n", temp)
               replacement = str(variables[string])
@@ -80,7 +80,8 @@ def madEval(expr):
 def evaluate(*args):
   num = madEval(args[2])
   if isinstance(num, collections.Iterable):
-    print("ARG2:", num)
+    #print("ARG2:", num)
+    print()
   if args[0] == "let" and len(args) == 3:
     if (re.search("[a-z]+", str(arg1)) != None):
       if (args[1] in variables.keys()):
@@ -94,8 +95,8 @@ def evaluate(*args):
   elif (args[0] == "do" and len(args) == 3):
     do(args[1], int(num))
     #args[1]
-  #print(args)
-  print(variables)
+  ##print(args)
+  #print(variables)
 
 def do(func, num):
   if num is 0: return
