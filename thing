@@ -1,0 +1,14 @@
+let;thing;2+2
+let;things;4+4
+print(thing+things)
+let;me;thing+things
+let;you;me+thing
+print(me+you)
+
+let;you;5
+print(you)
+
+let;myList;list([1, 2, 3, 4])
+myList
+let;myIter;iter(myList)
+do;print(myIter.next());3
