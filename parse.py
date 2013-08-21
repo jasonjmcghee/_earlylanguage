@@ -76,7 +76,8 @@ def madEval(expr):
               temp = re.sub(pattern, replacement, temp)
 
         return eval(temp)
-  return temp # hmmm
+    return temp # hmmm
+  return result
 
 #def replaceVariables()
 
@@ -88,9 +89,9 @@ def evaluate(*args):
   if args[0] == "let" and len(args) == 3:
     if (re.search("[a-z]+", str(arg1)) != None):
       if (args[1] in variables.keys()):
-        print("You told me \""+arg1+"\" meant", variables[arg1],"- did you lie?")
+        print("You told me \""+args[1]+"\" meant", variables[arg1],"- did you lie?")
       else:
-        constant = Constant(str(arg1), num)
+        constant = Constant(str(args[1]), num)
         variables[str(constant)] = getattr(constant, "obj")
         print(constant, "means", variables[str(constant)])
     else:
